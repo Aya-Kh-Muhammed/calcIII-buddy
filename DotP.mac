@@ -1,0 +1,1 @@
+DotP(u,v):=block(load("vect"),disp("u . v is:"), u.v);

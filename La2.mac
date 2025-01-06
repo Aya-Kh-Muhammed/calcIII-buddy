@@ -1,0 +1,22 @@
+La2(f,g1,g2):=block(load("vect"),Gradf:ev(express(grad(f)),diff),
+Gradg1:ev(express(grad(g1)),diff),
+Gradg2:ev(express(grad(g2)),diff),
+systofeq:makelist(eq, i, 1, length(Gradf)+2),
+for i: 1 thru length(Gradf) do systofeq[i]: Gradf[i]=λ*Gradg1[i]+β*Gradg2[i],
+systofeq[length(systofeq)-1]:g1=0, 
+systofeq[length(systofeq)]:g2=0,
+sol:solve(systofeq,[x,y,z,λ,β]),
+new_sol : [],
+for i : 1 thru length(sol) do (
+    new_sol : append(new_sol, [
+        map(lambda([eq], 
+            if abs(rhs(eq)) < 10^-4 then lhs(eq) = 0 else eq
+        ), sol[i])
+    ])
+),
+real_sol : [],
+for s in new_sol do (if every(lambda([eq], is(equal(imagpart(rhs(eq)), 0))), s) then (real_sol : append(real_sol, [s]))),
+disp("The system of equations:"),
+for i: 1 thru length(systofeq) do disp(systofeq[i]),
+disp("The solutions:"),
+for i: 1 thru length(real_sol) do disp(real_sol[i]));

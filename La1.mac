@@ -1,0 +1,20 @@
+La1(f,g):=block(load("vect"),Gradf:[diff(f,x),diff(f,y)],
+Gradg:[diff(g,x),diff(g,y)],
+systofeq:makelist(eq, i, 1, length(Gradf)+1),
+for i: 1 thru length(Gradf) do systofeq[i]: Gradf[i]=λ*Gradg[i],
+systofeq[length(systofeq)]:g=0,
+sol:solve(systofeq,[x,y,λ]),
+new_sol : [],
+for i : 1 thru length(sol) do (
+    new_sol : append(new_sol, [
+        map(lambda([eq], 
+            if abs(rhs(eq)) < 10^-4 then lhs(eq) = 0 else eq
+        ), sol[i])
+    ])
+),
+real_sol : [],
+for s in new_sol do (if every(lambda([eq], is(equal(imagpart(rhs(eq)), 0))), s) then (real_sol : append(real_sol, [s]))),
+disp("The system of equations:"),
+for i: 1 thru length(systofeq) do disp(systofeq[i]),
+disp("The solutions:"),
+for i: 1 thru length(real_sol) do disp(real_sol[i]));
